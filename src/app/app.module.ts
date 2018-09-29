@@ -1,14 +1,28 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { AppRoutes } from './app.routes';
+
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialAppModule } from './ngmaterial.module';
+
 import { AppComponent } from './app.component';
+import { SolutionComponent } from './solution/solution.component';
+import { ScannerComponent } from './scanner/scanner.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    SolutionComponent,
+    ScannerComponent,
+    SettingsComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    AppRoutes,
+    BrowserAnimationsModule,
+    MaterialAppModule
   ],
   providers: [],
   bootstrap: [AppComponent]
