@@ -1,0 +1,5 @@
+@import '~src/assets/global';
+
+.container {
+  @extend %flex;
+}
