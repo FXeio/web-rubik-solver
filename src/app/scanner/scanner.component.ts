@@ -23,34 +23,32 @@ export class ScannerComponent implements OnInit, OnDestroy {
 
   hsvRanges = {
     white: {
-      raw: [0.07070707070707075, 0.14601769911504422, 0.8862745098039215],
-      max: [],
-      min: []
+      max: [1, 1, 1],
+      min: [0, 0, 0.8]
     },
     blue: {
-      raw: [0.6417910447761194, 0.5630252100840336, 0.4666666666666667],
-      max: [],
-      min: []
+      max: [0.7520891364902507, 1, 0.65],
+      min: [0.5654596100278552, 0.3, 0.3]
+    },
+    orangered: {
+      max: [0.055710306406685235, 1, 0.65],
+      min: [0, 0.3, 0.3]
     },
     red: {
-      raw: [0.9942528735632185, 0.8787878787878787, 0.6470588235294118],
-      max: [],
-      min: []
+      max: [1, 1, 0.65],
+      min: [0.9331476323119777, 0.3, 0.3]
     },
     yellow: {
-      raw: [0.13190730837789663, 0.9540816326530612, 0.7686274509803922],
-      max: [],
-      min: []
+      max: [0.1894150417827298, 1, 0.65],
+      min: [0.12534818941504178, 0.3, 0.3]
     },
     green: {
-      raw: [0.2675438596491228, 0.7972027972027972, 0.5607843137254902],
-      max: [],
-      min: []
+      max: [0.403899721448468, 1, 0.65],
+      min: [0.23676880222841226, 0.3, 0.3]
     },
     orange: {
-      raw: [0.05518018018018018, 0.8809523809523808, 0.6588235294117647],
-      max: [],
-      min: []
+      max: [0.11977715877437325, 1, 0.65],
+      min: [0.07242339832869081, 0.3, 0.3]
     }
   };
 
@@ -66,15 +64,15 @@ export class ScannerComponent implements OnInit, OnDestroy {
     ];
     // this.pickersCenterPosition = [[step + this.cubeOffsetX, step + this.cubeOffsetY]];
 
-    for (const key in this.hsvRanges) {
-      if (this.hsvRanges.hasOwnProperty(key)) {
-        const color = this.hsvRanges[key];
-        for (let i = 0; i < 3; i++) {
-          color.max[i] = color.raw[i] + color.raw[i] * .02;
-          color.min[i] = color.raw[i] - color.raw[i] * .02;
-        }
-      }
-    }
+    // for (const key in this.hsvRanges) {
+    //   if (this.hsvRanges.hasOwnProperty(key)) {
+    //     const color = this.hsvRanges[key];
+    //     for (let i = 0; i < 3; i++) {
+    //       color.max[i] = color.raw[i] + color.raw[i] * .02;
+    //       color.min[i] = color.raw[i] - color.raw[i] * .02;
+    //     }
+    //   }
+    // }
     console.log(this.hsvRanges);
   }
 
@@ -83,32 +81,42 @@ export class ScannerComponent implements OnInit, OnDestroy {
     this.canvas = this.canvasElement.nativeElement.getContext('2d');
   }
 
-  colorDetector(hsv) {
+  colorDetector(hsl) {
+    console.clear();
     for (const key in this.hsvRanges) {
       if (this.hsvRanges.hasOwnProperty(key)) {
         const color = this.hsvRanges[key];
+        let match = true;
         for (let i = 0; i < 3; i++) {
-          if (hsv[i] <= color.max[i] && hsv[i] >= color.min[i]) {
-            return key;
+          if (hsl[i] > color.max[i] || hsl[i] < color.min[i]) {
+            match = false;
+            break;
           }
         }
+        if (match) {
+          // console.log('found', key, color.min, '<', hsl, '<', color.max);
+          return key;
+        }
+        //  else {
+        //   console.log('NOT', key, color.min, '<', hsl, '<', color.max);
+        // }
       }
     }
     return 'grey';
   }
 
-  rgbToHsv(rgb) {
+  rgbToHsl(rgb) {
     const r = rgb[0] / 255,
       g = rgb[1] / 255,
       b = rgb[2] / 255;
     const max = Math.max(r, g, b), min = Math.min(r, g, b);
     let h, s;
-    const v = max;
-    const d = max - min;
-    s = max === 0 ? 0 : d / max;
+    const l = (max + min) / 2;
     if (max === min) {
-      h = 0;
+      h = s = 0;
     } else {
+      const d = max - min;
+      s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
       switch (max) {
         case r: h = (g - b) / d + (g < b ? 6 : 0); break;
         case g: h = (b - r) / d + 2; break;
@@ -116,7 +124,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
       }
       h /= 6;
     }
-    return [h, s, v];
+    return [h, s, l];
   }
 
   startCamera() {
@@ -152,7 +160,7 @@ export class ScannerComponent implements OnInit, OnDestroy {
               });
               this.canvas.beginPath();
               this.canvas.lineWidth = '10';
-              this.canvas.strokeStyle = this.colorDetector(this.rgbToHsv(color.value));
+              this.canvas.strokeStyle = this.colorDetector(this.rgbToHsl(color.value));
               this.canvas.rect(picker[0] - this.brickSize / 2, picker[1] - this.brickSize / 2, this.brickSize, this.brickSize);
               this.canvas.stroke();
             }
