@@ -1,0 +1,11 @@
+@import '~src/assets/global';
+
+.container {
+  @extend %flex;
+  flex-direction: row;
+  // height: 100%;
+  // height: -moz-available;
+  // height: -webkit-fill-available;
+  // height: fill-available;
+  margin: 16px;
+}

@@ -1,5 +1,111 @@
-<div class="container">
-  <canvas #camera width="400" height="400"></canvas>
-  <button type="button" (click)="startCamera()">start</button>
-  <button type="button" (click)="ngOnDestroy()">pause</button>
+<div class="container" #container>
+  <div class="camera">
+    <canvas #camera [width]="canvasSize" [height]="canvasSize" (click)="startCamera()"></canvas>
+    <div class="controls">
+      <button type="button" mat-raised-button color="accent" (click)="catchColors()" [disabled]="cameraStarted === false">Capture colors</button>
+      <button type="button" mat-raised-button color="accent" (click)="solve()" [disabled]="canSolve === false">Confirm colors</button>
+      <!-- <button type="button" mat-raised-button color="accent" (click)="solve()">Confirm colors</button> -->
+    </div>
+  </div>
+  <div class="cube">
+    <canvas #cube [width]="canvasSize" [height]="canvasSize"></canvas>
+    <!-- <button type="button" (click)="pauseidle()">pause</button>
+    <button type="button" (click)="idleCube()">start</button> -->
+    <div class="controls">
+      <button mat-icon-button [disabled]="faceIndex === 0" (click)="prevFace()">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <p>{{faceIndex+1}} / 6</p>
+      <button mat-icon-button [disabled]="faceIndex === 5" (click)="nextFace()">
+        <mat-icon>arrow_forward</mat-icon>
+      </button>
+    </div>
+  </div>
+  <button (click)="applyFake()">apply fake cube</button>
+  <!-- <div class="controls">
+    <div class="color" style="background:white;">
+      <div class="sect">
+        <mat-slider (input)="updateHsl('white', 'H', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="whiteHmax"></mat-slider>
+        <mat-slider (input)="updateHsl('white', 'H', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="whiteHmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('white', 'S', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="whiteSmax"></mat-slider>
+        <mat-slider (input)="updateHsl('white', 'S', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="whiteSmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('white', 'L', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="whiteLmax"></mat-slider>
+        <mat-slider (input)="updateHsl('white', 'L', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="whiteLmin"></mat-slider>
+      </div>
+    </div>
+    <div class="color" style="background:blue;">
+      <div class="sect">
+        <mat-slider (input)="updateHsl('blue', 'H', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="blueHmax"></mat-slider>
+        <mat-slider (input)="updateHsl('blue', 'H', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="blueHmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('blue', 'S', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="blueSmax"></mat-slider>
+        <mat-slider (input)="updateHsl('blue', 'S', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="blueSmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('blue', 'L', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="blueLmax"></mat-slider>
+        <mat-slider (input)="updateHsl('blue', 'L', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="blueLmin"></mat-slider>
+      </div>
+    </div>
+    <div class="color" style="background:red;">
+      <div class="sect">
+        <mat-slider (input)="updateHsl('red', 'H', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="redHmax"></mat-slider>
+        <mat-slider (input)="updateHsl('red', 'H', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="redHmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('red', 'S', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="redSmax"></mat-slider>
+        <mat-slider (input)="updateHsl('red', 'S', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="redSmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('red', 'L', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="redLmax"></mat-slider>
+        <mat-slider (input)="updateHsl('red', 'L', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="redLmin"></mat-slider>
+      </div>
+    </div>
+    <div class="color" style="background:yellow;">
+      <div class="sect">
+        <mat-slider (input)="updateHsl('yellow', 'H', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="yellowHmax"></mat-slider>
+        <mat-slider (input)="updateHsl('yellow', 'H', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="yellowHmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('yellow', 'S', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="yellowSmax"></mat-slider>
+        <mat-slider (input)="updateHsl('yellow', 'S', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="yellowSmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('yellow', 'L', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="yellowLmax"></mat-slider>
+        <mat-slider (input)="updateHsl('yellow', 'L', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="yellowLmin"></mat-slider>
+      </div>
+    </div>
+    <div class="color" style="background:green;">
+      <div class="sect">
+        <mat-slider (input)="updateHsl('green', 'H', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="greenHmax"></mat-slider>
+        <mat-slider (input)="updateHsl('green', 'H', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="greenHmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('green', 'S', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="greenSmax"></mat-slider>
+        <mat-slider (input)="updateHsl('green', 'S', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="greenSmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('green', 'L', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="greenLmax"></mat-slider>
+        <mat-slider (input)="updateHsl('green', 'L', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="greenLmin"></mat-slider>
+      </div>
+    </div>
+    <div class="color" style="background:orange;">
+      <div class="sect">
+        <mat-slider (input)="updateHsl('orange', 'H', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="orangeHmax"></mat-slider>
+        <mat-slider (input)="updateHsl('orange', 'H', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="orangeHmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('orange', 'S', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="orangeSmax"></mat-slider>
+        <mat-slider (input)="updateHsl('orange', 'S', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="orangeSmin"></mat-slider>
+      </div>
+      <div class="sect">
+        <mat-slider (input)="updateHsl('orange', 'L', 'max', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="orangeLmax"></mat-slider>
+        <mat-slider (input)="updateHsl('orange', 'L', 'min', this.value)" class="example-margin" min="0" max="1" step="0.01" thumbLabel [(ngModel)]="orangeLmin"></mat-slider>
+      </div>
+    </div> -->
+  <!-- </div> -->
 </div>

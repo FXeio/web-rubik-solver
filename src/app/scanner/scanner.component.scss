@@ -2,4 +2,34 @@
 
 .container {
   @extend %flex;
+  flex-direction: row;
+  // height: 100%;
+  // height: -moz-available;
+  // height: -webkit-fill-available;
+  // height: fill-available;
+  margin: 16px;
+}
+
+.camera,
+.cube {
+  @extend %flex;
+  
+  .controls {
+    @extend %flex;
+    flex-direction: row;
+    margin: 20px;
+    width: 100%;
+  }
+}
+
+.color {
+  @extend %flex;
+  flex-direction: row;
+  
+}
+
+.sect {
+  @extend %flex;
+  flex-direction: column;
+
 }

@@ -5,6 +5,7 @@ import { AppRoutes } from './app.routes';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialAppModule } from './ngmaterial.module';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { SolutionComponent } from './solution/solution.component';
@@ -22,7 +23,8 @@ import { SettingsComponent } from './settings/settings.component';
     BrowserModule,
     AppRoutes,
     BrowserAnimationsModule,
-    MaterialAppModule
+    MaterialAppModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
