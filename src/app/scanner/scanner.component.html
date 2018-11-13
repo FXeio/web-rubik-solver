@@ -1,6 +1,6 @@
 <div class="container" #container>
   <div class="camera">
-    <canvas #camera [width]="canvasSize" [height]="canvasSize" (click)="startCamera()"></canvas>
+    <canvas #camera [width]="canvasSize" [height]="canvasSize" (click)="startCamera(e)"></canvas>
     <div class="controls">
       <button type="button" mat-raised-button color="accent" (click)="catchColors()" [disabled]="cameraStarted === false">Capture colors</button>
       <button type="button" mat-raised-button color="accent" (click)="solve()" [disabled]="canSolve === false">Confirm colors</button>
@@ -21,7 +21,7 @@
       </button>
     </div>
   </div>
-  <button (click)="applyFake()">apply fake cube</button>
+  <!-- <button (click)="applyFake()">apply fake cube</button> -->
   <!-- <div class="controls">
     <div class="color" style="background:white;">
       <div class="sect">

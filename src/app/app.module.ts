@@ -11,13 +11,15 @@ import { AppComponent } from './app.component';
 import { SolutionComponent } from './solution/solution.component';
 import { ScannerComponent } from './scanner/scanner.component';
 import { SettingsComponent } from './settings/settings.component';
+import { HomeComponent } from './home/home.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SolutionComponent,
     ScannerComponent,
-    SettingsComponent
+    SettingsComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

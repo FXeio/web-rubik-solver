@@ -5,7 +5,7 @@ import { CubeService } from '../services/cube.service';
 
 import { Message } from '../models/message';
 import { SocketService } from '../services/socket.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, fromEvent } from 'rxjs';
 import { Router } from '@angular/router';
 
 @Component({
@@ -33,8 +33,8 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
   fac: FastAverageColor;
   pickersCenterPosition: Array<Array<number>>;
   canvasSize = 400;
-  cubeOffsetX = 0;
-  cubeOffsetY = 0;
+  cubeOffsetX = 6;
+  cubeOffsetY = 30;
   brickSize = 60;
 
   detectedColors = [
@@ -48,27 +48,27 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
   hsvRanges = {
     blue: {
       max: [0.75, 1, 0.8],
-      min: [0.50, 0, 0.15]
+      min: [0.50, 0.25, 0.15]
     },
     orange: {
       max: [0.12, 1, 0.8],
-      min: [0.059, 0, 0.15]
+      min: [0.016, 0.25, 0.15]
     },
     orangered: {
       max: [0.06, 1, 0.8],
-      min: [0, 0, 0.15]
+      min: [0, 0.25, 0.15]
     },
     red: {
       max: [1, 1, 0.8],
-      min: [0.93, 0, 0.15]
+      min: [0.93, 0.25, 0.15]
     },
     yellow: {
       max: [0.19, 1, 0.8],
-      min: [0.13, 0, 0.15]
+      min: [0.13, 0.25, 0.15]
     },
     green: {
       max: [0.40, 1, 0.8],
-      min: [0.24, 0, 0.15]
+      min: [0.24, 0.25, 0.15]
     },
     white: {
       max: [1, 1, 1],
@@ -114,7 +114,7 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   ngOnInit() {
     // this.canvasSize = Math.min(this.containerElement.nativeElement.offsetWidth, this.containerElement.nativeElement.offsetHeight) - 32;
-    const step = this.canvasSize / 6;
+    const step = this.canvasSize / 6 - 6;
     this.pickersCenterPosition = [
       [step + this.cubeOffsetX, step + this.cubeOffsetY], [3 * step + this.cubeOffsetX, step + this.cubeOffsetY],
       [5 * step + this.cubeOffsetX, step + this.cubeOffsetY], [step + this.cubeOffsetX, 3 * step + this.cubeOffsetY],
@@ -132,7 +132,43 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.renderFace(0);
     this.cube.idle();
     this.resetCanvas();
+    // this.captureEvents(this.cubeCanvasElement.nativeElement);
+    this.startCamera();
   }
+
+  // private captureEvents(canvasEl: HTMLCanvasElement) {
+  //   fromEvent(canvasEl, 'mousedown')
+  //     .switchMap((e) => {
+  //       return Observable
+  //         // after a mouse down, we'll record all mouse moves
+  //         .fromEvent(canvasEl, 'mousemove')
+  //         // we'll stop (and unsubscribe) once the user releases the mouse
+  //         // this will trigger a 'mouseup' event    
+  //         .takeUntil(Observable.fromEvent(canvasEl, 'mouseup'))
+  //         // we'll also stop (and unsubscribe) once the mouse leaves the canvas (mouseleave event)
+  //         .takeUntil(Observable.fromEvent(canvasEl, 'mouseleave'))
+  //         // pairwise lets us get the previous value to draw a line from
+  //         // the previous point to the current point    
+  //         .pairwise()
+  //     })
+  //     .subscribe((res: [MouseEvent, MouseEvent]) => {
+  //       const rect = canvasEl.getBoundingClientRect();
+
+  //       // previous and current position with the offset
+  //       const prevPos = {
+  //         x: res[0].clientX - rect.left,
+  //         y: res[0].clientY - rect.top
+  //       };
+
+  //       const currentPos = {
+  //         x: res[1].clientX - rect.left,
+  //         y: res[1].clientY - rect.top
+  //       };
+
+  //       // this method we'll implement soon to do the actual drawing
+  //       this.drawOnCanvas(prevPos, currentPos);
+  //     });
+  // }
 
   resetCanvas() {
     this.canvas.fillStyle = 'DarkSlateGray';
@@ -342,7 +378,7 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   solve() {
     this.socketService.send(new Message('setString', this.cube.cubeString));
-    this.router.navigateByUrl('/');
+    this.router.navigateByUrl('/solution');
   }
 
   ngOnDestroy() {

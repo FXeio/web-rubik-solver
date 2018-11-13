@@ -31,12 +31,12 @@ export class CubeService {
     u: this.COLORS.UNSET
   };
   faceRenders = [
-    [260, 180], // white
-    [180, 170], // blue
-    [170, 90], // red
-    [100, 90], // yellow
-    [170, 0], // green
-    [190, 270] // orange
+    [250, 180], // white
+    [180, 160], // blue
+    [160, 90], // red
+    [110, 90], // yellow
+    [160, 0], // green
+    [200, 270] // orange
   ];
   rotations = {
     'F': [[0, 0, 1], !0],
