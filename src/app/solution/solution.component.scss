@@ -2,10 +2,20 @@
 
 .container {
   @extend %flex;
-  flex-direction: row;
+  flex-direction: column;
   // height: 100%;
   // height: -moz-available;
   // height: -webkit-fill-available;
   // height: fill-available;
   margin: 16px;
+
+  .viewer {
+    @extend %flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .moves {
+    text-align: center;
+  }
 }

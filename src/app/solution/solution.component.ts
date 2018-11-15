@@ -18,17 +18,33 @@ export class SolutionComponent implements OnInit, AfterViewInit, OnDestroy {
 
   messageListener: Subscription;
 
+  minMoves = Infinity;
+  moves;
+  totalTime = 0;
+  intervalTimer;
+  startTime;
+
   constructor(public socketService: SocketService) {
     this.messageListener = this.socketService.onMessage()
       .subscribe((m: Message) => {
         console.log(m);
         if (m.action === 'move') {
+          this.startTimer();
           this.cube.stopIdle();
           this.cube.renderPos(-145, 225);
           this.cube.move(m.content);
         } else if (m.action === 'setString') {
           this.cube.applyString(m.content);
           this.cube.idle();
+        } else if (m.action === 'solution') {
+          const len = m.content.split(' ').length;
+          if (len < this.minMoves) {
+            this.minMoves = len;
+            this.moves = m.content.toUpperCase();
+          }
+        } else if (m.action === 'totalTime') {
+          this.stopTimer();
+          this.totalTime = Number(m.content);
         }
       });
   }
@@ -39,10 +55,13 @@ export class SolutionComponent implements OnInit, AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     this.cube = new CubeService(this.cubeCanvasElement);
     this.socketService.send(new Message('getString', ''));
+    this.socketService.send(new Message('searchSolutions', ''));
   }
 
   ngOnDestroy() {
+    this.cube.destroy();
     this.messageListener.unsubscribe();
+    clearInterval(this.intervalTimer);
   }
 
   solve() {
@@ -56,6 +75,17 @@ export class SolutionComponent implements OnInit, AfterViewInit, OnDestroy {
     this.cube.stopIdle();
     this.cube.renderPos(-145, 225);
     this.cube.move(mov);
+  }
+
+  startTimer() {
+    this.startTime = Date.now();
+    this.intervalTimer = setInterval(() => {
+      this.totalTime = Date.now() - this.startTime;
+    }, 7);
+  }
+
+  stopTimer() {
+    clearInterval(this.intervalTimer);
   }
 
 }

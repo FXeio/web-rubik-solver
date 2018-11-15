@@ -1,9 +1,19 @@
 <div class="container" #container>
   <div class="camera">
-    <canvas #camera [width]="canvasSize" [height]="canvasSize" (click)="startCamera(e)"></canvas>
+    <div class="picker">
+      <div class="colors">
+        <div (click)="selectManualColor('white')" style="background-color:white" [class.active]="selectedColor === 'white'"></div>
+        <div (click)="selectManualColor('blue')" style="background-color:blue" [class.active]="selectedColor === 'blue'"></div>
+        <div (click)="selectManualColor('red')" style="background-color:red" [class.active]="selectedColor === 'red'"></div>
+        <div (click)="selectManualColor('yellow')" style="background-color:yellow" [class.active]="selectedColor === 'yellow'"></div>
+        <div (click)="selectManualColor('green')" style="background-color:green" [class.active]="selectedColor === 'green'"></div>
+        <div (click)="selectManualColor('orange')" style="background-color:orange" [class.active]="selectedColor === 'orange'"></div>
+      </div>
+      <canvas #camera [width]="canvasSize" [height]="canvasSize" (click)="startCamera()"></canvas>
+    </div>
     <div class="controls">
-      <button type="button" mat-raised-button color="accent" (click)="catchColors()" [disabled]="cameraStarted === false">Capture colors</button>
-      <button type="button" mat-raised-button color="accent" (click)="solve()" [disabled]="canSolve === false">Confirm colors</button>
+      <button type="button" mat-raised-button color="primary" (click)="catchColors()" [disabled]="cameraStarted === false">Capture colors</button>
+      <button type="button" mat-raised-button color="accent" (click)="solve()" [disabled]="canSolve === false">Confirm cube</button>
       <!-- <button type="button" mat-raised-button color="accent" (click)="solve()">Confirm colors</button> -->
     </div>
   </div>
@@ -21,7 +31,7 @@
       </button>
     </div>
   </div>
-  <!-- <button (click)="applyFake()">apply fake cube</button> -->
+  <button (click)="applyFake()">apply fake cube</button>
   <!-- <div class="controls">
     <div class="color" style="background:white;">
       <div class="sect">

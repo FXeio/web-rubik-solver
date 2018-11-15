@@ -42,6 +42,8 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
     '', '', '',
     '', '', '',
   ];
+  customColors = [];
+  selectedColor = 'white';
 
   faceIndex = 0;
 
@@ -51,12 +53,12 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
       min: [0.50, 0.25, 0.15]
     },
     orange: {
-      max: [0.12, 1, 0.8],
-      min: [0.016, 0.25, 0.15]
+      max: [0.09, 1, 0.83],
+      min: [0.016, 0.17, 0.15]
     },
     orangered: {
       max: [0.06, 1, 0.8],
-      min: [0, 0.25, 0.15]
+      min: [0, 0.15, 0.15]
     },
     red: {
       max: [1, 1, 0.8],
@@ -67,8 +69,8 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
       min: [0.13, 0.25, 0.15]
     },
     green: {
-      max: [0.40, 1, 0.8],
-      min: [0.24, 0.25, 0.15]
+      max: [0.40, 1, 0.9],
+      min: [0.22, 0.17, 0.15]
     },
     white: {
       max: [1, 1, 1],
@@ -89,7 +91,8 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   applyFake() {
     // this.cube.applyString('bgwowwywrybbgorwwyrrgybygggooroyoororbbbrryywowwggybbg');
-    this.cube.applyString('wwwwwwrrrbbbbbbbbbrryrryrryoooyyyyyygggggggggwoowoowoo');
+    // this.cube.applyString('wwwwwwrrrbbbbbbbbbrryrryrryoooyyyyyygggggggggwoowoowoo');
+    this.cube.applyString('obyrworogwyogbwgrwwwbbrogryrybgyywgorogbgybwrywbborogy');
     // this.cube.applyString('wwwwwwwwwbbbbbbbbbrrrrrrrrryyyyyyyyygggggggggooooooooo');
     this.faceIndex = 4;
     this.nextFace();
@@ -116,15 +119,46 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
     // this.canvasSize = Math.min(this.containerElement.nativeElement.offsetWidth, this.containerElement.nativeElement.offsetHeight) - 32;
     const step = this.canvasSize / 6 - 6;
     this.pickersCenterPosition = [
-      [step + this.cubeOffsetX, step + this.cubeOffsetY], [3 * step + this.cubeOffsetX, step + this.cubeOffsetY],
-      [5 * step + this.cubeOffsetX, step + this.cubeOffsetY], [step + this.cubeOffsetX, 3 * step + this.cubeOffsetY],
-      [3 * step + this.cubeOffsetX, 3 * step + this.cubeOffsetY], [5 * step + this.cubeOffsetX, 3 * step + this.cubeOffsetY],
-      [step + this.cubeOffsetX, 5 * step + this.cubeOffsetY], [3 * step + this.cubeOffsetX, 5 * step + this.cubeOffsetY],
-      [5 * step + this.cubeOffsetX, 5 * step + this.cubeOffsetY]
+      [step + this.cubeOffsetX - this.brickSize / 2, step + this.cubeOffsetY - this.brickSize / 2],
+      [3 * step + this.cubeOffsetX - this.brickSize / 2, step + this.cubeOffsetY - this.brickSize / 2],
+      [5 * step + this.cubeOffsetX - this.brickSize / 2, step + this.cubeOffsetY - this.brickSize / 2],
+      [step + this.cubeOffsetX - this.brickSize / 2, 3 * step + this.cubeOffsetY - this.brickSize / 2],
+      [3 * step + this.cubeOffsetX - this.brickSize / 2, 3 * step + this.cubeOffsetY - this.brickSize / 2],
+      [5 * step + this.cubeOffsetX - this.brickSize / 2, 3 * step + this.cubeOffsetY - this.brickSize / 2],
+      [step + this.cubeOffsetX - this.brickSize / 2, 5 * step + this.cubeOffsetY - this.brickSize / 2],
+      [3 * step + this.cubeOffsetX - this.brickSize / 2, 5 * step + this.cubeOffsetY - this.brickSize / 2],
+      [5 * step + this.cubeOffsetX - this.brickSize / 2, 5 * step + this.cubeOffsetY - this.brickSize / 2]
     ];
     // this.pickersCenterPosition = [[step + this.cubeOffsetX, step + this.cubeOffsetY]];
-    this.canvas = this.canvasElement.nativeElement.getContext('2d');
     this.video = document.createElement('video');
+    this.canvas = this.canvasElement.nativeElement.getContext('2d');
+    function whatsClicked(e) {
+      e.preventDefault();
+      const pos = {
+        x: e.layerX,
+        y: e.layerY
+      };
+      for (let i = 0; i < 9; i++) {
+        const picker = this.pickersCenterPosition[i];
+        if (pos.x > picker[0] && pos.x < picker[0] + this.brickSize && pos.y > picker[1] && pos.y < picker[1] + this.brickSize) {
+          if (e.type === 'contextmenu') {
+            this.customColors = this.customColors.filter((elm) => {
+              return elm !== i;
+            });
+          } else {
+            this.detectedColors[i] = this.selectedColor;
+            this.customColors.push(i);
+          }
+          break;
+        }
+      }
+    }
+    this.canvasElement.nativeElement.addEventListener('click', whatsClicked.bind(this));
+    this.canvasElement.nativeElement.addEventListener('contextmenu', whatsClicked.bind(this));
+  }
+
+  selectManualColor(color: string) {
+    this.selectedColor = color;
   }
 
   ngAfterViewInit() {
@@ -242,6 +276,7 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.canSolve = this.cube.checkSolve();
     if (this.faceIndex > 0) {
       this.cube.stopIdle(--this.faceIndex);
+      this.customColors = [];
       return true;
     }
     return false;
@@ -251,6 +286,7 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
     this.canSolve = this.cube.checkSolve();
     if (this.faceIndex < 5) {
       this.cube.stopIdle(++this.faceIndex);
+      this.customColors = [];
       return true;
     }
     return false;
@@ -304,7 +340,7 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   startCamera() {
     if (this.cameraStarted) {
-      this.stopCamera();
+      // this.stopCamera();
       return;
     }
     this.cube.stopIdle(this.faceIndex);
@@ -343,11 +379,18 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
             for (let i = 0; i < 9; i++) {
               const picker = this.pickersCenterPosition[i];
               let color, hsl;
-              if (i !== 4) {
+              let canChange = true;
+              for (let j = 0; j < this.customColors.length; j++) {
+                if (this.customColors[j] === i) {
+                  canChange = false;
+                }
+              }
+              if (canChange === false) {
+              } else if (i !== 4) {
                 hsl = this.rgbToHsl(this.fac.getColor(this.canvasElement.nativeElement, {
                   mode: 'fast',
-                  left: picker[0] - this.brickSize / 2,
-                  top: picker[1] - this.brickSize / 2,
+                  left: picker[0],
+                  top: picker[1],
                   width: this.brickSize,
                   height: this.brickSize
                 }).value);
@@ -360,14 +403,16 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
               if (color === 'orangered') {
                 color = 'red';
               }
-              this.canvas.strokeStyle = color;
-              this.canvas.rect(picker[0] - this.brickSize / 2, picker[1] - this.brickSize / 2, this.brickSize, this.brickSize);
-              this.canvas.stroke();
-              this.detectedColors[i] = color;
-              if (i === 8) {
-                console.log(hsl);
-
+              if (canChange) {
+                this.detectedColors[i] = color;
               }
+              this.canvas.strokeStyle = this.detectedColors[i];
+              this.canvas.rect(picker[0], picker[1], this.brickSize, this.brickSize);
+              this.canvas.stroke();
+              // if (i === 8) {
+              //   console.log(hsl);
+
+              // }
               // this.canvas.font = '20px Arial';
               // this.canvas.fillText(hsl, picker[0], picker[1] + this.brickSize);
             }
@@ -377,11 +422,16 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   solve() {
-    this.socketService.send(new Message('setString', this.cube.cubeString));
-    this.router.navigateByUrl('/solution');
+    if (this.cube.isValid()) {
+      this.socketService.send(new Message('setString', this.cube.cubeString));
+      this.router.navigateByUrl('/solution');
+    } else {
+      this.snackBar.open('The cube isn\'t valid because some colors are present more than 9 times', '', { duration: 5000 });
+    }
   }
 
   ngOnDestroy() {
+    this.cube.destroy();
     this.stopCamera();
     this.messageListener.unsubscribe();
   }

@@ -1,6 +1,13 @@
 <div class="container" #container>
-  <canvas #cube [width]="canvasSize" [height]="canvasSize"></canvas>
-<button type="button" mat-raised-button color="accent" (click)="solve()">Start solving</button>
+  <div class="viewer">
+    <h1>{{totalTime | date:'m:s.SSS'}}</h1>
+    <canvas #cube [width]="canvasSize" [height]="canvasSize"></canvas>
+    <button type="button" mat-raised-button color="accent" (click)="solve()">Start solving</button>
+  </div>
+  <div class="moves">
+    <h2>Best solution found: {{minMoves}} moves</h2>
+    <p>{{moves}}</p>
+  </div>
 <!-- <button (click)="mv('R')">L</button>
 <button (click)="mv('L')">R</button>
 <button (click)="mv('D')">U</button>

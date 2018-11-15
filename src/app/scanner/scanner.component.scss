@@ -13,7 +13,7 @@
 .camera,
 .cube {
   @extend %flex;
-  
+
   .controls {
     @extend %flex;
     flex-direction: row;
@@ -25,11 +25,41 @@
 .color {
   @extend %flex;
   flex-direction: row;
-  
+
 }
 
 .sect {
   @extend %flex;
   flex-direction: column;
 
+}
+
+.colors {
+  display: flex;
+  justify-content: space-evenly;
+  flex-direction: column;
+  height: 100%;
+  width: 60px;
+}
+
+.colors>div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  transition: box-shadow 250ms;
+  box-shadow: 0px 1px 7px 1px rgba(0, 0, 0, 0.25);
+}
+
+.picker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 400px;
+}
+
+.active {
+  box-shadow: 0px 1px 8px 3px rgba(0, 0, 0, 0.25) !important;
 }

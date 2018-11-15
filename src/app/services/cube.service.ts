@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 
 import { Cube } from 'freecube';
 
-@Injectable({
-  providedIn: 'root'
-})
+// @Injectable({
+//   providedIn: 'root'
+// })
 export class CubeService {
 
   cube: any;
@@ -112,6 +112,10 @@ export class CubeService {
     }, 1000 / 60);
   }
 
+  destroy() {
+    clearTimeout(this.cubeTick);
+  }
+
   stopIdle(faceToRender: number = null) {
     clearTimeout(this.cubeTick);
     if (faceToRender !== null) {
@@ -143,14 +147,22 @@ export class CubeService {
   async move(moves: string) {
     for (const move of moves.toUpperCase().split(' ')) {
       console.log(move);
-      await this.cube.animate(move, 175);
+      await this.cube.animate(move, 65);
       // this.cube.rotate(this.rotations[move][0], this.rotations[move][1]);
     }
     this.update();
   }
 
-  anim() {
-    this.cube.animate('U', 500);
-    this.cube.animate('D', 500);
+  isValid() {
+    if (this.cubeString.split('w').length - 1 > 9 ||
+      this.cubeString.split('b').length - 1 > 9 ||
+      this.cubeString.split('r').length - 1 > 9 ||
+      this.cubeString.split('y').length - 1 > 9 ||
+      this.cubeString.split('g').length - 1 > 9 ||
+      this.cubeString.split('o').length - 1 > 9
+    ) {
+      return false;
+    }
+    return true;
   }
 }
