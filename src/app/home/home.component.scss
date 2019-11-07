@@ -2,24 +2,10 @@
 
 .container {
   @extend %flex;
-  flex-direction: column;
+  flex-direction: row;
   // height: 100%;
   // height: -moz-available;
   // height: -webkit-fill-available;
   // height: fill-available;
   margin: 16px;
-
-  .viewer {
-    @extend %flex;
-    flex-direction: row;
-    width: 100%;
-
-    h1 {
-      font-size: 3em;
-    }
-  }
-
-  .moves {
-    text-align: center;
-  }
 }

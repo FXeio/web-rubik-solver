@@ -23,23 +23,25 @@ export class SolutionComponent implements OnInit, AfterViewInit, OnDestroy {
   totalTime = 0;
   intervalTimer;
   startTime;
+  bestSolutionString = 'The cube is being solved...';
 
   constructor(public socketService: SocketService) {
     this.messageListener = this.socketService.onMessage()
-      .subscribe((m: Message) => {
+      .subscribe(async (m: Message) => {
         console.log(m);
         if (m.action === 'move') {
           this.startTimer();
           this.cube.stopIdle();
           this.cube.renderPos(-145, 225);
-          this.cube.move(m.content);
+          await this.cube.move(m.content);
+          this.cube.idle();
         } else if (m.action === 'setString') {
           this.cube.applyString(m.content);
           this.cube.idle();
         } else if (m.action === 'solution') {
           const len = m.content.split(' ').length;
           if (len < this.minMoves) {
-            this.minMoves = len;
+            this.bestSolutionString = `Best solution found: ${len} moves`;
             this.moves = m.content.toUpperCase();
           }
         } else if (m.action === 'totalTime') {

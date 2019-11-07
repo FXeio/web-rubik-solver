@@ -35,7 +35,7 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
   canvasSize = 400;
   cubeOffsetX = 6;
   cubeOffsetY = 30;
-  brickSize = 60;
+  brickSize = 30;
 
   detectedColors = [
     '', '', '',
@@ -53,24 +53,24 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
       min: [0.50, 0.25, 0.15]
     },
     orange: {
-      max: [0.09, 1, 0.83],
-      min: [0.016, 0.17, 0.15]
+      max: [0.16, 1, 0.86],
+      min: [0.02, 0.7, 0.15]
     },
     orangered: {
-      max: [0.06, 1, 0.8],
+      max: [0.07, 1, 0.82],
       min: [0, 0.15, 0.15]
     },
     red: {
-      max: [1, 1, 0.8],
+      max: [1, 1, 0.82],
       min: [0.93, 0.25, 0.15]
     },
     yellow: {
-      max: [0.19, 1, 0.8],
-      min: [0.13, 0.25, 0.15]
+      max: [0.22, 1, 0.87],
+      min: [0.13, 0.53, 0.15]
     },
     green: {
-      max: [0.40, 1, 0.9],
-      min: [0.22, 0.17, 0.15]
+      max: [0.46, 1, 0.9],
+      min: [0.191, 0.3, 0.15]
     },
     white: {
       max: [1, 1, 1],
@@ -91,8 +91,8 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
 
   applyFake() {
     // this.cube.applyString('bgwowwywrybbgorwwyrrgybygggooroyoororbbbrryywowwggybbg');
-    // this.cube.applyString('wwwwwwrrrbbbbbbbbbrryrryrryoooyyyyyygggggggggwoowoowoo');
-    this.cube.applyString('obyrworogwyogbwgrwwwbbrogryrybgyywgorogbgybwrywbborogy');
+    this.cube.applyString('wwwwwwrrrbbbbbbbbbrryrryrryoooyyyyyygggggggggwoowoowoo');
+    // this.cube.applyString('obyrworogwyogbwgrwwwbbrogryrybgyywgorogbgybwrywbborogy');
     // this.cube.applyString('wwwwwwwwwbbbbbbbbbrrrrrrrrryyyyyyyyygggggggggooooooooo');
     this.faceIndex = 4;
     this.nextFace();
@@ -409,10 +409,9 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
               this.canvas.strokeStyle = this.detectedColors[i];
               this.canvas.rect(picker[0], picker[1], this.brickSize, this.brickSize);
               this.canvas.stroke();
-              // if (i === 8) {
-              //   console.log(hsl);
-
-              // }
+              if (i === 0) {
+                console.log(hsl);
+              }
               // this.canvas.font = '20px Arial';
               // this.canvas.fillText(hsl, picker[0], picker[1] + this.brickSize);
             }

@@ -1,11 +1,11 @@
 <div class="container" #container>
   <div class="viewer">
-    <h1>{{totalTime | date:'m:s.SSS'}}</h1>
+    <h1>{{totalTime | date:'s.SSS'}}s</h1>
     <canvas #cube [width]="canvasSize" [height]="canvasSize"></canvas>
     <button type="button" mat-raised-button color="accent" (click)="solve()">Start solving</button>
   </div>
   <div class="moves">
-    <h2>Best solution found: {{minMoves}} moves</h2>
+    <h2>{{bestSolutionString}}</h2>
     <p>{{moves}}</p>
   </div>
 <!-- <button (click)="mv('R')">L</button>

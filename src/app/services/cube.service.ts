@@ -147,7 +147,7 @@ export class CubeService {
   async move(moves: string) {
     for (const move of moves.toUpperCase().split(' ')) {
       console.log(move);
-      await this.cube.animate(move, 65);
+      await this.cube.animate(move, 40);
       // this.cube.rotate(this.rotations[move][0], this.rotations[move][1]);
     }
     this.update();
