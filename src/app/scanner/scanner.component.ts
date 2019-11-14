@@ -264,7 +264,7 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
         this.cube.cubeString = this.replaceAt(this.cube.cubeString, stringIndex++, colorsChar[colorIndex]);
       }
     }
-    console.log(this.cube.cubeString, this.detectedColors);
+    // console.log(this.cube.cubeString, this.detectedColors);
     this.cube.applyString(this.cube.cubeString);
     if (!this.nextFace()) {
       this.cube.idle();
@@ -344,7 +344,7 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
       return;
     }
     this.cube.stopIdle(this.faceIndex);
-    this.initCamera({ video: { facingMode: 'environment', width: this.canvasSize, height: this.canvasSize } });
+    this.initCamera({ video: { facingMode: 'environment', width: this.canvasSize, height: this.canvasSize}});
     this.cameraStarted = true;
   }
 
@@ -366,7 +366,17 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
       browser.msGetUserMedia;
 
     browser.mediaDevices.getUserMedia(config)
-      .then(stream => {
+      .then((stream: MediaStream) => {
+        console.log(stream.getVideoTracks()[0]);
+        console.log(stream.getVideoTracks()[0].getCapabilities());
+        setTimeout(() => {
+          // https://www.oberhofer.co/mediastreamtrack-and-its-capabilities/
+          // https://developer.mozilla.org/en-US/docs/Web/API/MediaTrackConstraints
+          stream.getVideoTracks()[0].applyConstraints({
+            // @ts-ignore
+            advanced: [{ colorTemperature: 2850 }]
+          })
+        }, 500)
         this.video.srcObject = stream;
         this.video.onloadedmetadata = () => {
           // this.canvas.width = this.video.videoWidth;
@@ -410,7 +420,7 @@ export class ScannerComponent implements OnInit, AfterViewInit, OnDestroy {
               this.canvas.rect(picker[0], picker[1], this.brickSize, this.brickSize);
               this.canvas.stroke();
               if (i === 0) {
-                console.log(hsl);
+                // console.log(hsl);
               }
               // this.canvas.font = '20px Arial';
               // this.canvas.fillText(hsl, picker[0], picker[1] + this.brickSize);
